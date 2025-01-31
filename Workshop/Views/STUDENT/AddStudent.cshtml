@@ -1,0 +1,35 @@
+﻿@model Workshop.Models.Student
+
+@{
+    ViewData["Title"] = "Add Student";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center">Add Student</h1>
+
+<div class="container mt-4">
+    <h2>Add Student</h2>
+
+    <form method="post" asp-controller="Student" asp-action="AddStudent">
+        <div class="mb-3">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="Name" asp-for="Name" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="Email" asp-for="Email" required>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Age" class="form-label">Age</label>
+            <input type="number" class="form-control" id="Age" asp-for="Age" required>
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
+        <a class="btn btn-secondary" asp-controller="Student" asp-action="Index">Cancel</a>
+    </form>
+</div>
