@@ -31,6 +31,7 @@ namespace Workshop.Controllers
                 bool isAdded = studentModel.insert(student);
                 if (isAdded)
                 {
+                    TempData["SuccessMessage"] = "Student added successfully!";
                     return RedirectToAction("Index");
                 }
                 ModelState.AddModelError("", "Failed to add student.");
@@ -43,9 +44,10 @@ namespace Workshop.Controllers
         public IActionResult EditStudent(int id)
         {
             List<Student> students = studentModel.getData(id.ToString());
-            if (students.Count == 0)
+            if (students == null || students.Count == 0)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Student not found!";
+                return RedirectToAction("Index");
             }
             return View(students[0]);
         }
@@ -58,7 +60,11 @@ namespace Workshop.Controllers
             {
                 bool isUpdated = studentModel.update(updatedStudent);
                 if (isUpdated)
+                {
+                    TempData["SuccessMessage"] = "Student updated successfully!";
                     return RedirectToAction("Index");
+                }
+                ModelState.AddModelError("", "Failed to update student.");
             }
             return View(updatedStudent);
         }
@@ -68,9 +74,10 @@ namespace Workshop.Controllers
         public IActionResult DeleteStudent(int id)
         {
             List<Student> students = studentModel.getData(id.ToString());
-            if (students.Count == 0)
+            if (students == null || students.Count == 0)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Student not found!";
+                return RedirectToAction("Index");
             }
             return View(students[0]);
         }
@@ -81,10 +88,13 @@ namespace Workshop.Controllers
         {
             bool isDeleted = studentModel.delete(id);
             if (isDeleted)
+            {
+                TempData["SuccessMessage"] = "Student deleted successfully!";
                 return RedirectToAction("Index");
+            }
 
-            ModelState.AddModelError("", "Failed to delete student.");
-            return View("DeleteStudent", studentModel.getData(id.ToString())[0]);
+            TempData["ErrorMessage"] = "Failed to delete student.";
+            return RedirectToAction("Index");
         }
     }
 }

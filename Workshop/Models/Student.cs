@@ -73,23 +73,20 @@ namespace Workshop.Models
         // ✅ Update Student Data
         public bool update(Student student)
         {
-            if (!string.IsNullOrWhiteSpace(student.Name) && !string.IsNullOrWhiteSpace(student.Email) && !string.IsNullOrWhiteSpace(student.Age))
+            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("UPDATE Student SET Name=@name, Email=@email, Age=@age WHERE Id=@id", con))
             {
-                using (SqlConnection con = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand("UPDATE Student SET Name=@name, Email=@email, Age=@age WHERE Id=@id", con))
-                {
-                    cmd.Parameters.AddWithValue("@name", student.Name);
-                    cmd.Parameters.AddWithValue("@email", student.Email);
-                    cmd.Parameters.AddWithValue("@age", student.Age);
-                    cmd.Parameters.AddWithValue("@id", student.Id);
+                cmd.Parameters.AddWithValue("@name", student.Name);
+                cmd.Parameters.AddWithValue("@email", student.Email);
+                cmd.Parameters.AddWithValue("@age", student.Age);
+                cmd.Parameters.AddWithValue("@id", student.Id);
 
-                    con.Open();
-                    int i = cmd.ExecuteNonQuery();
-                    return i > 0;
-                }
+                con.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;  // Returns true if at least 1 row is updated
             }
-            return false;
         }
+
 
         // ✅ Delete Student Data
         public bool delete(int id)

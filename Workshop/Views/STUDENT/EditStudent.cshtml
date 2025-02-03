@@ -1,35 +1,28 @@
 ﻿@model Workshop.Models.Student
 
-@{
-    ViewData["Title"] = "Edit Student";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<h2>Edit Student</h2>
 
-<h1 class="text-center">Edit Student</h1>
+<form asp-action="EditStudent" method="post">
+    <input type="hidden" asp-for="Id" />
 
-<div class="container mt-4">
-    <h2>Edit Student</h2>
+    <div class="form-group">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
 
-    <form method="post" asp-controller="Student" asp-action="AddStudent">
-        <div class="mb-3">
-            <label for="Name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="Name" asp-for="Name" required>
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label for="Email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="Email" asp-for="Email" required>
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="Age">Age</label>
+        <input asp-for="Age" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label for="Age" class="form-label">Age</label>
-            <input type="number" class="form-control" id="Age" asp-for="Age" required>
-            <span asp-validation-for="Age" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Edit</button>
-        <a class="btn btn-secondary" asp-controller="Student" asp-action="Index">Cancel</a>
-    </form>
-</div>
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
