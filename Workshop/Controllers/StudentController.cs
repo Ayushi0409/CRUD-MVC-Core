@@ -76,14 +76,15 @@ namespace Workshop.Controllers
         }
 
         // ✅ Handle Delete Confirmation
-        [HttpPost]
+        [HttpPost, ActionName("DeleteStudent")]
         public IActionResult DeleteStudentConfirmed(int id)
         {
             bool isDeleted = studentModel.delete(id);
             if (isDeleted)
                 return RedirectToAction("Index");
 
-            return NotFound();
+            ModelState.AddModelError("", "Failed to delete student.");
+            return View("DeleteStudent", studentModel.getData(id.ToString())[0]);
         }
     }
 }

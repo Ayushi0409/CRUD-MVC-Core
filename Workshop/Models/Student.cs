@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace Workshop.Models
 {
@@ -10,15 +9,15 @@ namespace Workshop.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Age { get; set; }
+        public string Age { get; set; } // Keep as string to match DB values
 
         private string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Student;Integrated Security=True;";
 
-        // ✅ Method to Retrieve Data
+        // ✅ Retrieve Data (By ID)
         public List<Student> getData(string id)
         {
             List<Student> lstStu = new List<Student>();
-            string query = "SELECT * FROM Student"; // Ensure correct table name
+            string query = "SELECT * FROM Student";
 
             if (!string.IsNullOrWhiteSpace(id))
             {
@@ -51,7 +50,7 @@ namespace Workshop.Models
             return lstStu;
         }
 
-        // ✅ Method to Insert Data
+        // ✅ Insert Student Data
         public bool insert(Student student)
         {
             if (!string.IsNullOrWhiteSpace(student.Name) && !string.IsNullOrWhiteSpace(student.Email) && !string.IsNullOrWhiteSpace(student.Age))
@@ -71,7 +70,7 @@ namespace Workshop.Models
             return false;
         }
 
-        // ✅ Method to Update Data
+        // ✅ Update Student Data
         public bool update(Student student)
         {
             if (!string.IsNullOrWhiteSpace(student.Name) && !string.IsNullOrWhiteSpace(student.Email) && !string.IsNullOrWhiteSpace(student.Age))
@@ -92,7 +91,7 @@ namespace Workshop.Models
             return false;
         }
 
-        // ✅ Method to Delete Data
+        // ✅ Delete Student Data
         public bool delete(int id)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
@@ -101,9 +100,64 @@ namespace Workshop.Models
                 cmd.Parameters.AddWithValue("@id", id);
 
                 con.Open();
-                int i = cmd.ExecuteNonQuery();
-                return i > 0;
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
             }
+        }
+
+
+        // ✅ Get Student by ID
+        public Student GetStudentById(int id)
+        {
+            string query = "SELECT * FROM Student WHERE Id=@Id"; // Ensure table name is correct
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@Id", id);
+                con.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Student
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            Name = reader["Name"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Age = reader["Age"].ToString()
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ✅ Get All Students
+        public List<Student> GetAllStudents()
+        {
+            List<Student> lststu = new List<Student>();
+            string query = "SELECT * FROM Student";
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                con.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lststu.Add(new Student
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            Name = reader["Name"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Age = reader["Age"].ToString()
+                        });
+                    }
+                }
+            }
+            return lststu;
         }
     }
 }
